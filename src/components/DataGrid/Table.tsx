@@ -9,8 +9,9 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import { ReactNode } from 'react';
 
-interface Rows {
+export interface Rows {
   id: number;
   nome: string;
   price: string;
@@ -18,7 +19,8 @@ interface Rows {
 
 interface ColumnsProps {
   columnName: string;
-  columnValue: string;
+  columnValue?: string;
+  render?: (item: Rows) => ReactNode;
 }
 
 interface TableProps {
@@ -29,6 +31,7 @@ interface TableProps {
 
 interface CellProps {
   rowValue: string | number;
+  actions?: ReactNode | null;
 }
 
 function Table({ isLoading, columns, data }: TableProps) {
@@ -49,12 +52,24 @@ function Table({ isLoading, columns, data }: TableProps) {
                 const cells = columns.map((column: ColumnsProps) => {
                   return {
                     rowValue: item[column.columnValue as keyof Rows],
+                    actions: column?.render ? column.render(item) : null,
                   };
                 });
+
                 return (
-                  <TableRow key={Math.random()} hover>
+                  <TableRow key={item.id} hover>
                     {cells.map((row: CellProps) => (
-                      <TableCell key={row.rowValue}>{row.rowValue}</TableCell>
+                      <>
+                        {row.actions ? (
+                          <TableCell key={row.rowValue}>
+                            {row.actions}
+                          </TableCell>
+                        ) : (
+                          <TableCell key={row.rowValue}>
+                            {row.rowValue}
+                          </TableCell>
+                        )}
+                      </>
                     ))}
                   </TableRow>
                 );

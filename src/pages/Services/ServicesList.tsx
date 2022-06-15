@@ -1,10 +1,11 @@
-import { Button } from '@mui/material';
+import { Button, IconButton, Tooltip } from '@mui/material';
 import Page from '../../layouts/Page';
 import { Link } from 'react-router-dom';
 import { Add as AddIcon } from '@mui/icons-material';
-import Table from '../../components/DataGrid/Table';
+import Table, { Rows } from '../../components/DataGrid/Table';
 import { useEffect, useState } from 'react';
 import ServicesService from '../../services/ServicesService';
+import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 
 function ServicesList() {
   const [services, setServices] = useState([]);
@@ -18,6 +19,34 @@ function ServicesList() {
     {
       columnName: 'Preço',
       columnValue: 'price',
+    },
+    {
+      columnName: 'Ações',
+      //we can receive the row data ( render: ({ id }: Rows) => () )
+      render: () => (
+        <>
+          <Tooltip title='Editar'>
+            <IconButton
+              // component={Link}
+              // to={`${original.id}/edit`}
+              sx={{ p: 0 }}
+              aria-label='edit'
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Remover'>
+            <IconButton
+              // component={Link}
+              // to={`${original.id}/edit`}
+              sx={{ p: 0, ml: 2 }}
+              aria-label='edit'
+            >
+              <DeleteIcon sx={{ color: 'rgba(187, 30, 14, 0.8)' }} />
+            </IconButton>
+          </Tooltip>
+        </>
+      ),
     },
   ];
 
