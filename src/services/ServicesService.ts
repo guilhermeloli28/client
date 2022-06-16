@@ -14,6 +14,11 @@ class ServicesService {
 
     return response.json();
   }
+  async delete(id: string) {
+    return await fetch(`http://localhost:3001/services/${id}`, {
+      method: 'DELETE'
+    });
+  }
 }
 
 export default new ServicesService();

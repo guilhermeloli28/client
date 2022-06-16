@@ -11,18 +11,19 @@ interface BreadcrumbsProps {
   breadcrumbs: Breadcrumb[];
 }
 
-function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
-  event.preventDefault();
-  console.info('You clicked a breadcrumb.');
-}
-
-function BreadcrumbsWrapper({ breadcrumbs }: BreadcrumbsProps) {
+export const BreadcrumbsWrapper = ({ breadcrumbs }: BreadcrumbsProps) => {
   return (
     <Breadcrumbs
       separator={<NavigateNextIcon fontSize='small' />}
       aria-label='breadcrumb'
     >
-      <Link underline='hover' key='1' color='inherit' onClick={handleClick}>
+      <Link
+        underline='hover'
+        key='1'
+        color='inherit'
+        to='dashboard'
+        component={RouterLink}
+      >
         Ínicio
       </Link>
       {breadcrumbs.map((item) =>
@@ -44,6 +45,6 @@ function BreadcrumbsWrapper({ breadcrumbs }: BreadcrumbsProps) {
       )}
     </Breadcrumbs>
   );
-}
+};
 
 export default BreadcrumbsWrapper;

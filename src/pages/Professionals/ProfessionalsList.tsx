@@ -1,13 +1,14 @@
 import { Button } from '@mui/material';
-import Page from '../../layouts/Page';
+import { Page } from '../../layouts';
 import { Link } from 'react-router-dom';
 import { Add as AddIcon } from '@mui/icons-material';
-import Table from '../../components/DataGrid/Table';
+import { Table } from '../../components/index';
 import { useEffect, useState } from 'react';
 import ProfessionalsService from '../../services/ProfessionalsService';
+import { Professionals } from '../../@types';
 
 function ProfessionalsList() {
-  const [professionals, setProfessionals] = useState([]);
+  const [professionals, setProfessionals] = useState<Professionals[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const columns = [
@@ -55,7 +56,12 @@ function ProfessionalsList() {
         </Button>
       }
     >
-      <Table data={professionals} isLoading={isLoading} columns={columns} />
+      <Table
+        data={professionals}
+        isLoading={isLoading}
+        columns={columns}
+        labelTotalCount='profissionais'
+      />
     </Page>
   );
 }

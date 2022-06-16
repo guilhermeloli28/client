@@ -1,5 +1,5 @@
-import { Button, TableContainer } from '@mui/material';
-import Page from '../../layouts/Page';
+import { Button } from '@mui/material';
+import { Page } from '../../layouts';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 

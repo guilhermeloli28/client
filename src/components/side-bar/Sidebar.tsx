@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Button,
   Divider,
   Drawer,
   Icon,
@@ -74,8 +73,8 @@ export const Sidebar: React.FC<Props> = ({ children }) => {
           >
             <Avatar
               sx={{
-                height: theme.spacing(12),
-                width: theme.spacing(12),
+                height: theme.spacing(17),
+                width: theme.spacing(17),
               }}
               src={logo}
             />

@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material';
 
 import { ReactNode } from 'react';
-import Breadcrumbs from './BreadcrumbsWrapper';
+import BreadcrumbsWrapper from './BreadcrumbsWrapper';
 
 export interface BreadcrumbsProps {
   label: string;
@@ -15,10 +15,10 @@ interface PageProps {
   children?: ReactNode;
 }
 
-function Page({ title, actions, breadcrumbs, children }: PageProps) {
+export const Page = ({ title, actions, breadcrumbs, children }: PageProps) => {
   return (
     <Box sx={{ pt: 8, pl: 5, pr: 5 }}>
-      {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
+      {breadcrumbs && <BreadcrumbsWrapper breadcrumbs={breadcrumbs} />}
       <Grid container spacing={3} sx={{ mt: 1 }}>
         <Grid item>
           <Typography variant='h5'>{title}</Typography>
@@ -30,6 +30,6 @@ function Page({ title, actions, breadcrumbs, children }: PageProps) {
       <Box sx={{ mt: 5 }}>{children}</Box>
     </Box>
   );
-}
+};
 
 export default Page;

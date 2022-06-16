@@ -1,29 +1,67 @@
-import { Button, IconButton, Tooltip } from '@mui/material';
-import Page from '../../layouts/Page';
+import { Button, Chip, IconButton, Tooltip } from '@mui/material';
+import { Page } from '../../layouts';
 import { Link } from 'react-router-dom';
 import { Add as AddIcon } from '@mui/icons-material';
-import Table, { Rows } from '../../components/DataGrid/Table';
+import { Table } from '../../components/index';
 import { useEffect, useState } from 'react';
 import ServicesService from '../../services/ServicesService';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Services } from '../../@types';
+import { useConfirm } from 'material-ui-confirm';
 
 function ServicesList() {
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState<Services[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const confirm = useConfirm();
+
+  function removeService(service: Services) {
+    confirm({
+      title: `Tem certeza que deseja remover o serviço: ${service.name}?`,
+      description: 'Essa ação é permanente!',
+      confirmationText: 'Confirmar',
+      confirmationButtonProps: {
+        color: 'error',
+      },
+      cancellationButtonProps: {
+        color: 'inherit',
+      },
+    })
+      .then(async () => {
+        await ServicesService.delete(service.id);
+
+        const servicesUpdated = services.filter(
+          (option) => option.id !== service.id
+        );
+
+        setServices(servicesUpdated);
+      })
+      .catch(() => {
+        /* ... */
+      });
+  }
 
   const columns = [
     {
       columnName: 'Nome',
-      columnValue: 'nome',
+      columnValue: 'name',
     },
     {
       columnName: 'Preço',
       columnValue: 'price',
+      render: ({ price }: Services) => (
+        <Chip
+          label={`R$ ${price}`}
+          color='default'
+          size='small'
+          variant='outlined'
+        />
+      ),
+      // we can call any type of component inside render
     },
     {
       columnName: 'Ações',
       //we can receive the row data ( render: ({ id }: Rows) => () )
-      render: () => (
+      render: (service: Services) => (
         <>
           <Tooltip title='Editar'>
             <IconButton
@@ -37,8 +75,7 @@ function ServicesList() {
           </Tooltip>
           <Tooltip title='Remover'>
             <IconButton
-              // component={Link}
-              // to={`${original.id}/edit`}
+              onClick={() => removeService(service)}
               sx={{ p: 0, ml: 2 }}
               aria-label='edit'
             >
@@ -88,7 +125,12 @@ function ServicesList() {
         </Button>
       }
     >
-      <Table data={services} isLoading={isLoading} columns={columns} />
+      <Table
+        data={services}
+        isLoading={isLoading}
+        columns={columns}
+        labelTotalCount='serviços'
+      />
     </Page>
   );
 }

@@ -1,4 +1,6 @@
 import {
+  Box,
+  InputAdornment,
   LinearProgress,
   Paper,
   Table as TableMUI,
@@ -8,51 +10,69 @@ import {
   TableFooter,
   TableHead,
   TableRow,
+  TextField,
+  Typography,
 } from '@mui/material';
-import { ReactNode } from 'react';
-
-export interface Rows {
-  id: number;
-  nome: string;
-  price: string;
-}
+import { ReactNode, useMemo, useState } from 'react';
+import { GlobalFilter } from './GlobalFilter';
 
 interface ColumnsProps {
   columnName: string;
   columnValue?: string;
-  render?: (item: Rows) => ReactNode;
+  render?: (item: any) => ReactNode;
 }
 
 interface TableProps {
   isLoading: boolean;
   columns: ColumnsProps[];
   data: any;
+  labelTotalCount: string;
 }
 
 interface CellProps {
   rowValue: string | number;
-  actions?: ReactNode | null;
+  render?: ReactNode | null;
 }
 
-function Table({ isLoading, columns, data }: TableProps) {
+export const Table = ({
+  isLoading,
+  columns,
+  data,
+  labelTotalCount,
+}: TableProps) => {
+  const [search, setSearch] = useState('');
+
+  const dataFiltered = useMemo(() => {
+    return data.filter((item: any) =>
+      item.name.toLowerCase().includes(search.toLocaleLowerCase())
+    );
+  }, [search, data]);
+
   return (
     <>
       <TableContainer component={Paper}>
+        <GlobalFilter
+          value={search}
+          setSearch={setSearch}
+          isLoading={isLoading}
+          labelTotalCount={labelTotalCount}
+          dataFiltered={dataFiltered}
+        />
         <TableMUI size='medium'>
           <TableHead>
             <TableRow>
               {columns.map((item) => (
-                <TableCell key={item.columnValue}>{item.columnName}</TableCell>
+                <TableCell key={item.columnName}>{item.columnName}</TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
             {!isLoading &&
-              data.map((item: Rows) => {
+              dataFiltered.map((item: any) => {
                 const cells = columns.map((column: ColumnsProps) => {
                   return {
-                    rowValue: item[column.columnValue as keyof Rows],
-                    actions: column?.render ? column.render(item) : null,
+                    rowValue: item[column.columnValue as keyof any],
+                    render: column?.render ? column.render(item) : null,
                   };
                 });
 
@@ -60,14 +80,10 @@ function Table({ isLoading, columns, data }: TableProps) {
                   <TableRow key={item.id} hover>
                     {cells.map((row: CellProps) => (
                       <>
-                        {row.actions ? (
-                          <TableCell key={row.rowValue}>
-                            {row.actions}
-                          </TableCell>
+                        {row.render ? (
+                          <TableCell key={item.id}>{row.render}</TableCell>
                         ) : (
-                          <TableCell key={row.rowValue}>
-                            {row.rowValue}
-                          </TableCell>
+                          <TableCell key={item.id}>{row.rowValue}</TableCell>
                         )}
                       </>
                     ))}
@@ -75,7 +91,7 @@ function Table({ isLoading, columns, data }: TableProps) {
                 );
               })}
           </TableBody>
-          {data.length === 0 && !isLoading && (
+          {dataFiltered.length === 0 && !isLoading && (
             <caption>Nenhum registro encontrado</caption>
           )}
           {isLoading && (
@@ -89,6 +105,4 @@ function Table({ isLoading, columns, data }: TableProps) {
       </TableContainer>
     </>
   );
-}
-
-export default Table;
+};
